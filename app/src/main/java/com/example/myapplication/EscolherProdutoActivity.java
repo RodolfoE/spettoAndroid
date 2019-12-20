@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 
 import java.io.Console;
@@ -29,6 +30,12 @@ public class EscolherProdutoActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        try{
+            obterProdutos();
+        } catch (Exception exception){
+            Log.d("Erro:", exception.getMessage());
+        }
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,7 +46,7 @@ public class EscolherProdutoActivity extends AppCompatActivity {
         });
     }
 
-    private void fetchWeatherDetails() {
+    private void obterProdutos() {
         Retrofit retrofit = NetworkClient.getRetrofitClient();
         EscolherProdutosAPI produtos = retrofit.create(EscolherProdutosAPI.class);
         Call call = produtos.getProdutos();
@@ -52,6 +59,7 @@ public class EscolherProdutoActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call call, Throwable t) {
+                Log.e("Erro", "Deu ruim");
             }
         });
     }
