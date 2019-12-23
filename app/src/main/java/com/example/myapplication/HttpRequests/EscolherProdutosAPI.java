@@ -8,5 +8,5 @@ import retrofit2.http.Query;
 
 public interface EscolherProdutosAPI {
     @GET("/produto/get_produtos")
-    Call<Produto> getProdutos(); //ex: @Query("q") String city, @Query("appid") String apiKey
+    Call<Produto[]> getProdutos(); //ex: @Query("q") String city, @Query("appid") String apiKey
 }
