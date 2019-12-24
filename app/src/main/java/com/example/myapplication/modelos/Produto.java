@@ -11,6 +11,10 @@ public class Produto {
     @Expose
     private String valor;
 
+    public Produto(String nome){
+        this.nome = nome;
+    }
+
     public String getValor() {
         return valor;
     }

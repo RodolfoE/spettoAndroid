@@ -3,6 +3,7 @@ package com.example.myapplication.Adaptador;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,10 +13,14 @@ import com.example.myapplication.EscolherProdutoActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.modelos.Produto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EscolherProdutoAdaptador  extends RecyclerView.Adapter<EscolherProdutoAdaptador.MyViewHolder> {
     private Produto[] mDataset;
+    private ItemClickListener mListener;
 
-    public void setClickListener(EscolherProdutoActivity escolherProdutoActivity) {
+    public void setClickListener(ItemClickListener escolherProdutoActivity) {
     }
 
     // Provide a reference to the views for each data item
@@ -31,8 +36,9 @@ public class EscolherProdutoAdaptador  extends RecyclerView.Adapter<EscolherProd
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public EscolherProdutoAdaptador(EscolherProdutoActivity escolherProdutoActivity, Produto[] myDataset) {
+    public EscolherProdutoAdaptador(EscolherProdutoActivity escolherProdutoActivity, Produto[] myDataset, ItemClickListener listener) {
         mDataset = myDataset;
+        mListener = listener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -49,13 +55,24 @@ public class EscolherProdutoAdaptador  extends RecyclerView.Adapter<EscolherProd
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        //holder.textView.setText(mDataset[position]);
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         ((TextView) holder.linearLayout.findViewById(R.id.nome)).setText(mDataset[position].getNome());
         ((TextView) holder.linearLayout.findViewById(R.id.preco)).setText(mDataset[position].getValor());
         ((TextView) holder.linearLayout.findViewById(R.id.qtd)).setText(mDataset[position].getQtd() + "");
+        ((Button) holder.linearLayout.findViewById(R.id.add)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.addProduto(v, position);
+            }
+        });
+
+        ((Button) holder.linearLayout.findViewById(R.id.remover)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.removerProduto(v, position);
+            }
+        });
+
     }
 
     // convenience method for getting data at click position
@@ -70,6 +87,16 @@ public class EscolherProdutoAdaptador  extends RecyclerView.Adapter<EscolherProd
 
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
-        void onItemClick(View view, int position);
+        void addProduto(View view, int position);
+        void removerProduto(View view, int position);
+    }
+
+    public Produto[] obterItensSelecionados(){
+        ArrayList<Produto> produtosFiltrados = new ArrayList<Produto>();
+        for (Produto produto : mDataset) {
+            if (produto.getQtd() > 0)
+                produtosFiltrados.add(produto);
+        }
+        return produtosFiltrados.toArray(new Produto[produtosFiltrados.size()]);
     }
 }
