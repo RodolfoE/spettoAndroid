@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -126,8 +127,8 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
                 }
             }
 
-    });
-}
+        });
+    }
 
     private void listagemProdutos(final EscolherProdutoActivity ctx, String filtroNome) {
         Retrofit retrofit = NetworkClient.getRetrofitClient();
@@ -143,6 +144,7 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
             @Override
             public void onResponse(Call call, Response response) {
                 try{
+                    Log.e("Erro", response.body().toString());
                     if (response.body() != null) {
                         Produto[] produto= (Produto[]) response.body();
                         boolean manterEstadoApp = true;
@@ -219,6 +221,11 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
         EscolherProdutosAPI produtos = retrofit.create(EscolherProdutosAPI.class);
 
         Call call = produtos.postProduto(itens);
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setTitle("Carregando");
+        progress.setMessage("Pedido está sendo processado...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
@@ -226,17 +233,21 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
                     if (response.body() != null) {
                         Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Pedido realizado com sucesso.", 3000);
                         mySnackbar.show();
+                        // To dismiss the dialog
                     }
                 } catch (Exception e){
                     Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Ocorreu um erro ao realizar pedido.", 3000);
                     mySnackbar.show();
                     Log.e("Erro", e.getMessage());
+                } finally {
+                    progress.dismiss();
                 }
             }
             @Override
             public void onFailure(Call call, Throwable t) {
                 Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Ocorreu um erro ao realizar pedido.", 3000);
                 mySnackbar.show();
+                progress.dismiss();
                 Log.e("Erro", t.getMessage());
             }
         });
