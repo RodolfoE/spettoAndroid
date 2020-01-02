@@ -43,6 +43,7 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
     private RecyclerView  mRecyclerView;
     private Produto[] mProdutos;
     private Produto[] mProdutosSelecionados;
+    private EscolherProdutoActivity mCtx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +64,10 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
                     mProdutos = gson.fromJson(json, Produto[].class);
                 }
             }
-
             initViews();
         } catch (Exception e){
+            Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Ocorreu um erro.", 3000);
+            mySnackbar.show();
             Log.e("Erro", e.getMessage());
         }
     }
@@ -79,15 +81,15 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
     }
 
     private void initViews(){
-        final EscolherProdutoActivity ctx = this;
+        mCtx = this;
         mRecyclerView = findViewById(R.id.my_recycler_view2);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (mProdutos == null)
-            listagemProdutos(ctx, null);
+            listagemProdutos(mCtx, null);
         else {
-            adapter = new EscolherProdutoAdaptador(ctx, mProdutos, ctx);
+            adapter = new EscolherProdutoAdaptador(mCtx, mProdutos, mCtx);
             mRecyclerView.setAdapter(adapter);
         }
 
@@ -120,7 +122,7 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
             @Override
             public void afterTextChanged(Editable s) {
                 if ((Boolean)((EditText)findViewById(R.id.pesquisar)).getTag()) {
-                    listagemProdutos(ctx, s.toString());
+                    listagemProdutos(mCtx, s.toString());
                 }
             }
 
@@ -143,29 +145,55 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
                 try{
                     if (response.body() != null) {
                         Produto[] produto= (Produto[]) response.body();
-                        if (mProdutos == null)
+                        boolean manterEstadoApp = true;
+                        if (mProdutos == null){
                             mProdutos = produto;
-                        adapter = new EscolherProdutoAdaptador(ctx, produto, ctx);
-                        mRecyclerView.setAdapter(adapter);
+                            manterEstadoApp = false;
+                        }
+                        exibirProdutos(produto, manterEstadoApp);
                     }
                 } catch (Exception e){
-                    Log.e("Erro", "Deu ruim");
+                    Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Ocorreu um erro ao obter lista de produtos.", 3000);
+                    mySnackbar.show();
+                    Log.e("Erro", e.getMessage());
                 }
             }
             @Override
             public void onFailure(Call call, Throwable t) {
-
-                Log.e("Erro", "Deu ruim");
+                Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Ocorreu um erro ao obter lista de produtos.", 3000);
+                mySnackbar.show();
+                Log.e("Erro", t.getMessage());
             }
         });
+    }
+
+    /**
+     * Exibe os produtos numa lista
+     * @param produtos
+     * @param manterEstadoApp mantem o estado da aplicação (evita iteração inicial desnecessária)
+     */
+    private void exibirProdutos(Produto[] produtos, boolean manterEstadoApp){
+        if (manterEstadoApp)
+            for (Produto produto : produtos) {
+                for (Produto mProduto : mProdutos) {
+                    if (mProduto.getIdProduto().equals(produto.getIdProduto()))
+                        produto.setQtd(mProduto.getQtd());
+                }
+            }
+        adapter = new EscolherProdutoAdaptador(mCtx, produtos, mCtx);
+        mRecyclerView.setAdapter(adapter);
     }
 
     @Override
     public void addProduto(View view, int position) {
         findViewById(R.id.fazer_pedido).setEnabled(true);
         Produto item = adapter.getItem(position);
-
-        item.setQtd(item.getQtd() + 1);
+        int novaQtd = item.getQtd() + 1;
+        for (Produto mProduto : mProdutos) {
+            if (mProduto.getIdProduto().equals(item.getIdProduto()))
+                mProduto.setQtd(novaQtd);
+        }
+        item.setQtd(novaQtd);
         adapter.notifyDataSetChanged();
     }
 
@@ -196,17 +224,20 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
             public void onResponse(Call call, Response response) {
                 try{
                     if (response.body() != null) {
-                        Toast.makeText(getApplicationContext(), "Pedido realizado com sucesso.", Toast.LENGTH_LONG);
+                        Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Pedido realizado com sucesso.", 3000);
+                        mySnackbar.show();
                     }
                 } catch (Exception e){
-                    Toast.makeText(getApplicationContext(), "Falha ao realizar pedido", Toast.LENGTH_LONG);
-                    Log.e("Erro", "Deu ruim");
+                    Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Ocorreu um erro ao realizar pedido.", 3000);
+                    mySnackbar.show();
+                    Log.e("Erro", e.getMessage());
                 }
             }
             @Override
             public void onFailure(Call call, Throwable t) {
-
-                Log.e("Erro", "Deu ruim");
+                Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Ocorreu um erro ao realizar pedido.", 3000);
+                mySnackbar.show();
+                Log.e("Erro", t.getMessage());
             }
         });
     }
