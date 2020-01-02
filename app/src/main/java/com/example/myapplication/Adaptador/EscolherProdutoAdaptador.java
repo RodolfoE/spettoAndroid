@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,10 +29,10 @@ public class EscolherProdutoAdaptador  extends RecyclerView.Adapter<EscolherProd
     // you provide access to all the views for a data item in a view holder
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public LinearLayout linearLayout;
+        public LinearLayout relativeLayout;
         public MyViewHolder(LinearLayout v) {
             super(v);
-            linearLayout = v;
+            relativeLayout = v;
         }
     }
 
@@ -56,17 +57,17 @@ public class EscolherProdutoAdaptador  extends RecyclerView.Adapter<EscolherProd
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        ((TextView) holder.linearLayout.findViewById(R.id.nome)).setText(mDataset[position].getNome());
-        ((TextView) holder.linearLayout.findViewById(R.id.preco)).setText(mDataset[position].getValor());
-        ((TextView) holder.linearLayout.findViewById(R.id.qtd)).setText(mDataset[position].getQtd() + "");
-        ((Button) holder.linearLayout.findViewById(R.id.add)).setOnClickListener(new View.OnClickListener() {
+        ((TextView) holder.relativeLayout.findViewById(R.id.nome)).setText(mDataset[position].getNome());
+        ((TextView) holder.relativeLayout.findViewById(R.id.preco)).setText("R$" + mDataset[position].getValor());
+        ((TextView) holder.relativeLayout.findViewById(R.id.qtd)).setText(mDataset[position].getQtd() + "");
+        (holder.relativeLayout.findViewById(R.id.add)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.addProduto(v, position);
             }
         });
 
-        ((Button) holder.linearLayout.findViewById(R.id.remover)).setOnClickListener(new View.OnClickListener() {
+        (holder.relativeLayout.findViewById(R.id.remover)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.removerProduto(v, position);

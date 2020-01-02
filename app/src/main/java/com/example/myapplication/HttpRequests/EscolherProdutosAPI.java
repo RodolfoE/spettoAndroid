@@ -16,6 +16,9 @@ public interface EscolherProdutosAPI {
     @GET("/produto/get_produtos")
     Call<Produto[]> getProdutos(); //ex: @Query("q") String city, @Query("appid") String apiKey
 
+    @GET("/produto/get_produtos")
+    Call<Produto[]> getProdutos(@Query("where") String where);
+
     @POST("/pedidos/post_pedido_itens")
     Call<Object> postProduto(@Body ItensPedido itens_pedido);
 }

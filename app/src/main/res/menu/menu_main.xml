@@ -3,9 +3,4 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="br.com.srtorcedor.FeedActivity">
 
-    <item android:id="@+id/action_search"
-        android:title="asdfasd"
-        app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="always" />
-
 </menu>

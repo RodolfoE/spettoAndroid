@@ -4,12 +4,19 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ItensPedido {
-    public ItensPedido(Produto[] itensPedido, String tipoDono, int donoPedido, int idPedidos) {
+    public ItensPedido(Produto[] itensPedido, String tipoDono, int donoPedido, int idPedidos, int idResponsavel) {
         ItensPedido = itensPedido;
         this.tipoDono = tipoDono;
         this.donoPedido = donoPedido;
         this.idPedidos = idPedidos;
+        this.idResponsavel = idResponsavel;
     }
+
+
+
+    @SerializedName("id_responsavel")
+    @Expose
+    private int idResponsavel;
 
     @SerializedName("itens_pedido")
     @Expose
