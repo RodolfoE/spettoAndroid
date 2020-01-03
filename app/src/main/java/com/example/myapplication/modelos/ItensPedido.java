@@ -12,8 +12,6 @@ public class ItensPedido {
         this.idResponsavel = idResponsavel;
     }
 
-
-
     @SerializedName("id_responsavel")
     @Expose
     private int idResponsavel;

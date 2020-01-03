@@ -10,6 +10,7 @@ import com.example.myapplication.Adaptador.EscolherProdutoAdaptador;
 import com.example.myapplication.HttpRequests.EscolherProdutosAPI;
 import com.example.myapplication.HttpRequests.NetworkClient;
 import com.example.myapplication.modelos.ItensPedido;
+import com.example.myapplication.modelos.ItensPedidoFeito;
 import com.example.myapplication.modelos.Produto;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -29,6 +30,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.Console;
@@ -38,19 +40,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import com.example.myapplication.util.utils;
+
 
 public class EscolherProdutoActivity extends AppCompatActivity implements EscolherProdutoAdaptador.ItemClickListener {
     private EscolherProdutoAdaptador adapter;
     private RecyclerView  mRecyclerView;
     private Produto[] mProdutos;
-    private Produto[] mProdutosSelecionados;
+    private ArrayList<Produto> mProdutosSelecionados = new ArrayList<>();
+    private ItensPedidoFeito[] mItensPedido;
     private EscolherProdutoActivity mCtx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try{
-            setTitle("");
             setContentView(R.layout.activity_escolher_produto);
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
@@ -88,7 +92,7 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (mProdutos == null)
-            listagemProdutos(mCtx, null);
+            obterItensDoPedido();
         else {
             adapter = new EscolherProdutoAdaptador(mCtx, mProdutos, mCtx);
             mRecyclerView.setAdapter(adapter);
@@ -110,6 +114,7 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
             }
         });
         pesquisa.addTextChangedListener(new TextWatcher() {
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -146,13 +151,17 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
                 try{
                     Log.e("Erro", response.body().toString());
                     if (response.body() != null) {
-                        Produto[] produto= (Produto[]) response.body();
-                        boolean manterEstadoApp = true;
                         if (mProdutos == null){
-                            mProdutos = produto;
-                            manterEstadoApp = false;
+                            mProdutos = (Produto[]) response.body();
+                            mProdutos = prepararListagemProduto(mProdutos, mItensPedido);
+                            exibirProdutos(mProdutos);
+                            ((TextView) findViewById(R.id.vlr_total)).setText("R$" + getValorPedido());
+                        } else {
+                            Produto[] prod = (Produto[]) response.body();
+                            Produto[] prod1 = prepararListagemProduto(prod, mItensPedido);
+                            Produto[] prod2 = prepararListagemProduto(prod1, mProdutosSelecionados);
+                            exibirProdutos(prod2);
                         }
-                        exibirProdutos(produto, manterEstadoApp);
                     }
                 } catch (Exception e){
                     Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Ocorreu um erro ao obter lista de produtos.", 3000);
@@ -169,19 +178,63 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
         });
     }
 
+    private Produto[] prepararListagemProduto(Produto[] produtos, ItensPedidoFeito[] itensPedidoFeitos){
+        for (Produto prod : produtos) {
+            int qtdAparicoes = utils.qtdAparicoesArray(itensPedidoFeitos, prod.getIdProduto());
+            prod.setQtd(qtdAparicoes);
+        }
+        produtos = utils.ordernarArray(produtos);
+        return produtos;
+    }
+
+    private Produto[] prepararListagemProduto(Produto[] produtos, ArrayList<Produto> itensPedidoFeitos){
+        for (Produto prod : produtos) {
+            int qtdAparicoes = indexProdutoSelecionado(itensPedidoFeitos, prod.getIdProduto());
+            if (qtdAparicoes != -1)
+                prod.setQtd(prod.getQtd() + itensPedidoFeitos.get(qtdAparicoes).getQtd());
+        }
+        produtos = utils.ordernarArray(produtos);
+        return produtos;
+    }
+
+    private double getValorPedido(){
+        double valorPedid = 0;
+        for (Produto prod : mProdutos) {
+            if (prod.getQtd() > 0){
+                valorPedid += Double.parseDouble(prod.getValor()) * prod.getQtd();
+            }
+        }
+        return valorPedid;
+    }
+
+    private void obterItensDoPedido(){
+        Retrofit retrofit = NetworkClient.getRetrofitClient();
+        EscolherProdutosAPI produtos = retrofit.create(EscolherProdutosAPI.class);
+        Call call = produtos.getItensPedido(1);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                if (response.body() != null){
+                    mItensPedido = (ItensPedidoFeito[]) response.body();
+                    listagemProdutos(mCtx, "");
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Ocorreu um erro ao obter lista de itens.", 3000);
+                mySnackbar.show();
+                Log.e("Erro", t.getMessage());
+            }
+        });
+
+    }
+
     /**
      * Exibe os produtos numa lista
      * @param produtos
-     * @param manterEstadoApp mantem o estado da aplicação (evita iteração inicial desnecessária)
      */
-    private void exibirProdutos(Produto[] produtos, boolean manterEstadoApp){
-        if (manterEstadoApp)
-            for (Produto produto : produtos) {
-                for (Produto mProduto : mProdutos) {
-                    if (mProduto.getIdProduto().equals(produto.getIdProduto()))
-                        produto.setQtd(mProduto.getQtd());
-                }
-            }
+    private void exibirProdutos(Produto[] produtos){
         adapter = new EscolherProdutoAdaptador(mCtx, produtos, mCtx);
         mRecyclerView.setAdapter(adapter);
     }
@@ -195,8 +248,28 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
             if (mProduto.getIdProduto().equals(item.getIdProduto()))
                 mProduto.setQtd(novaQtd);
         }
+        int indexProd = indexProdutoSelecionado(mProdutosSelecionados, item.getIdProduto());
+        if (indexProd == -1){
+            Gson gson = new Gson();
+            String json= gson.toJson(item);
+            Produto prd = gson.fromJson(json, Produto.class);
+            prd.setQtd(1);
+            mProdutosSelecionados.add(prd);
+        } else {
+            mProdutosSelecionados.get(indexProd).setQtd(mProdutosSelecionados.get(indexProd).getQtd() + 1);
+        }
+
         item.setQtd(novaQtd);
         adapter.notifyDataSetChanged();
+        ((TextView) findViewById(R.id.vlr_total)).setText("R$" + getValorPedido());
+    }
+
+    public int indexProdutoSelecionado(ArrayList<Produto> itensSelecionados, String id){
+        for (int i = 0; i < itensSelecionados.size(); i++) {
+            if (itensSelecionados.get(i).getIdProduto().equals(id))
+                return i;
+        }
+        return -1;
     }
 
     @Override
@@ -204,14 +277,20 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
         Produto item = adapter.getItem(position);
         int qtd = item.getQtd() - 1 < 0 ? 0 : item.getQtd() - 1;
         item.setQtd(qtd);
+        int indexProd = indexProdutoSelecionado(mProdutosSelecionados, item.getIdProduto());
+        if (mProdutosSelecionados.get(indexProd).getQtd() == 0){
+            mProdutosSelecionados.remove(indexProd);
+        } else {
+            mProdutosSelecionados.get(indexProd).setQtd(qtd);
+        }
         adapter.notifyDataSetChanged();
-        Produto[] produtos = adapter.obterItensSelecionados();
-        if (produtos.length == 0)
+        if (mProdutosSelecionados.size() == 0)
             findViewById(R.id.fazer_pedido).setEnabled(false);
+        ((TextView) findViewById(R.id.vlr_total)).setText("R$" + getValorPedido());
     }
 
     private void realizarPedido(){
-        Produto[] produtos = adapter.obterItensSelecionados();
+        Produto[] produtos = mProdutosSelecionados.toArray(new Produto[mProdutosSelecionados.size()]);
         ItensPedido itens = new ItensPedido(produtos, "mesa", 1, 1, 1);
         postarProduto(itens);
     }
