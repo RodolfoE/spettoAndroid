@@ -42,7 +42,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import com.example.myapplication.util.utils;
 
-
 public class EscolherProdutoActivity extends AppCompatActivity implements EscolherProdutoAdaptador.ItemClickListener {
     private EscolherProdutoAdaptador adapter;
     private RecyclerView  mRecyclerView;
@@ -50,6 +49,7 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
     private ArrayList<Produto> mProdutosSelecionados = new ArrayList<>();
     private ItensPedidoFeito[] mItensPedido;
     private EscolherProdutoActivity mCtx;
+    private int mIdPedido = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +92,11 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (mProdutos == null)
-            obterItensDoPedido();
+            if (mIdPedido != -1)
+                obterItensDoPedido(mIdPedido);
+            else {
+                listagemProdutos(mCtx, null);
+            }
         else {
             adapter = new EscolherProdutoAdaptador(mCtx, mProdutos, mCtx);
             mRecyclerView.setAdapter(adapter);
@@ -155,7 +159,7 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
                             mProdutos = (Produto[]) response.body();
                             mProdutos = prepararListagemProduto(mProdutos, mItensPedido);
                             exibirProdutos(mProdutos);
-                            ((TextView) findViewById(R.id.vlr_total)).setText("R$" + getValorPedido());
+                            ((TextView) findViewById(R.id.vlr_total)).setText("R$" + getValorPedido(mProdutos));
                         } else {
                             Produto[] prod = (Produto[]) response.body();
                             Produto[] prod1 = prepararListagemProduto(prod, mItensPedido);
@@ -179,11 +183,13 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
     }
 
     private Produto[] prepararListagemProduto(Produto[] produtos, ItensPedidoFeito[] itensPedidoFeitos){
-        for (Produto prod : produtos) {
-            int qtdAparicoes = utils.qtdAparicoesArray(itensPedidoFeitos, prod.getIdProduto());
-            prod.setQtd(qtdAparicoes);
+        if (itensPedidoFeitos != null && itensPedidoFeitos.length != 0){
+            for (Produto prod : produtos) {
+                int qtdAparicoes = utils.qtdAparicoesArray(itensPedidoFeitos, prod.getIdProduto());
+                prod.setQtd(qtdAparicoes);
+            }
+            produtos = utils.ordernarArray(produtos);
         }
-        produtos = utils.ordernarArray(produtos);
         return produtos;
     }
 
@@ -197,9 +203,9 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
         return produtos;
     }
 
-    private double getValorPedido(){
+    private double getValorPedido(Produto[] produtos){
         double valorPedid = 0;
-        for (Produto prod : mProdutos) {
+        for (Produto prod : produtos) {
             if (prod.getQtd() > 0){
                 valorPedid += Double.parseDouble(prod.getValor()) * prod.getQtd();
             }
@@ -207,10 +213,13 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
         return valorPedid;
     }
 
-    private void obterItensDoPedido(){
+    private void obterItensDoPedido(int idPedido){
         Retrofit retrofit = NetworkClient.getRetrofitClient();
         EscolherProdutosAPI produtos = retrofit.create(EscolherProdutosAPI.class);
-        Call call = produtos.getItensPedido(1);
+
+        Call call;
+        call = produtos.getItensPedido(idPedido);
+
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
@@ -261,7 +270,7 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
 
         item.setQtd(novaQtd);
         adapter.notifyDataSetChanged();
-        ((TextView) findViewById(R.id.vlr_total)).setText("R$" + getValorPedido());
+        ((TextView) findViewById(R.id.vlr_total)).setText("R$" + getValorPedido(mProdutos));
     }
 
     public int indexProdutoSelecionado(ArrayList<Produto> itensSelecionados, String id){
@@ -278,7 +287,7 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
         int qtd = item.getQtd() - 1 < 0 ? 0 : item.getQtd() - 1;
         item.setQtd(qtd);
         int indexProd = indexProdutoSelecionado(mProdutosSelecionados, item.getIdProduto());
-        if (mProdutosSelecionados.get(indexProd).getQtd() == 0){
+        if (qtd == 0){
             mProdutosSelecionados.remove(indexProd);
         } else {
             mProdutosSelecionados.get(indexProd).setQtd(qtd);
@@ -286,12 +295,17 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
         adapter.notifyDataSetChanged();
         if (mProdutosSelecionados.size() == 0)
             findViewById(R.id.fazer_pedido).setEnabled(false);
-        ((TextView) findViewById(R.id.vlr_total)).setText("R$" + getValorPedido());
+        ((TextView) findViewById(R.id.vlr_total)).setText("R$" + getValorPedido(mProdutos));
     }
 
     private void realizarPedido(){
         Produto[] produtos = mProdutosSelecionados.toArray(new Produto[mProdutosSelecionados.size()]);
-        ItensPedido itens = new ItensPedido(produtos, "mesa", 1, 1, 1);
+        ItensPedido itens;
+        if (mIdPedido != -1){
+            itens = new ItensPedido(produtos, "mesa", 1, mIdPedido,1);
+        } else {
+            itens = new ItensPedido(produtos, "mesa", 1,1);
+        }
         postarProduto(itens);
     }
 
@@ -309,10 +323,14 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
             @Override
             public void onResponse(Call call, Response response) {
                 try{
+                    if (response.errorBody() != null)
+                        throw new Exception(response.errorBody().string());
                     if (response.body() != null) {
                         Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Pedido realizado com sucesso.", 3000);
                         mySnackbar.show();
-                        // To dismiss the dialog
+                        mProdutosSelecionados.clear();
+                        findViewById(R.id.fazer_pedido).setEnabled(false);
+                        mIdPedido = ((ItensPedido) response.body()).getIdPedidos();
                     }
                 } catch (Exception e){
                     Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Ocorreu um erro ao realizar pedido.", 3000);

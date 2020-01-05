@@ -12,6 +12,13 @@ public class ItensPedido {
         this.idResponsavel = idResponsavel;
     }
 
+    public ItensPedido(Produto[] itensPedido, String tipoDono, int donoPedido, int idResponsavel) {
+        ItensPedido = itensPedido;
+        this.tipoDono = tipoDono;
+        this.donoPedido = donoPedido;
+        this.idResponsavel = idResponsavel;
+    }
+
     @SerializedName("id_responsavel")
     @Expose
     private int idResponsavel;

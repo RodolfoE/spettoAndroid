@@ -24,5 +24,5 @@ public interface EscolherProdutosAPI {
     Call<ItensPedidoFeito[]> getItensPedido(@Query("id_pedido") int idPedido);
 
     @POST("/pedidos/post_pedido_itens")
-    Call<Object> postProduto(@Body ItensPedido itens_pedido);
+    Call<ItensPedido> postProduto(@Body ItensPedido itens_pedido);
 }
