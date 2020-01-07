@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        startActivity(new Intent(this, EscolherProdutoActivity.class));
+        startActivity(new Intent(this, DonoDoPedido.class));
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,7 +1,11 @@
 package com.example.myapplication.HttpRequests;
 
+import com.example.myapplication.DonoDoPedido;
+import com.example.myapplication.modelos.Cliente;
+import com.example.myapplication.modelos.ClienteDelivery;
 import com.example.myapplication.modelos.ItensPedido;
 import com.example.myapplication.modelos.ItensPedidoFeito;
+import com.example.myapplication.modelos.Mesa;
 import com.example.myapplication.modelos.Produto;
 
 import java.util.ArrayList;
@@ -25,4 +29,24 @@ public interface EscolherProdutosAPI {
 
     @POST("/pedidos/post_pedido_itens")
     Call<ItensPedido> postProduto(@Body ItensPedido itens_pedido);
+
+    @POST("/pedidos/obter_mesas")
+    Call<DonoDoPedido> getMesas(@Body int id_dono);
+
+    @GET("/pedidos/obter_mesas")
+    Call<Mesa[]> getMesas();
+
+    @GET("/pedidos/obter_clientes")
+    Call<Cliente[]> getClientes();
+
+    @GET("/pedidos/obter_clientes")
+    Call<Cliente[]> getClientes(@Body int id_cliente);
+
+    @GET("/pedidos/obter_clientes_delivery")
+    Call<ClienteDelivery[]> getClientesDelivery(@Body int id_cliente);
+
+    @GET("/pedidos/obter_clientes_delivery")
+    Call<ClienteDelivery[]> getClientesDelivery();
+
+
 }

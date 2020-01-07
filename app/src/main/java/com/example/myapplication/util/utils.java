@@ -1,7 +1,12 @@
 package com.example.myapplication.util;
 
+import android.content.Context;
+import android.util.Log;
+import android.view.View;
+
 import com.example.myapplication.modelos.ItensPedidoFeito;
 import com.example.myapplication.modelos.Produto;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -52,5 +57,11 @@ public class utils {
             return null;
         array[indx] = null;
         return maior;
+    }
+
+    public static void tratamentoDeErroPadrao(Exception e, View ctx){
+        Snackbar mySnackbar = Snackbar.make(ctx, "Ocorreu um erro.", 3000);
+        mySnackbar.show();
+        Log.e("Erro", e.getMessage());
     }
 }

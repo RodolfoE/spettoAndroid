@@ -1,9 +1,6 @@
 package com.example.myapplication;
 
 import android.app.ProgressDialog;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.myapplication.Adaptador.EscolherProdutoAdaptador;
@@ -12,7 +9,6 @@ import com.example.myapplication.HttpRequests.NetworkClient;
 import com.example.myapplication.modelos.ItensPedido;
 import com.example.myapplication.modelos.ItensPedidoFeito;
 import com.example.myapplication.modelos.Produto;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
@@ -26,14 +22,9 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.Console;
 import java.util.ArrayList;
 
 import retrofit2.Call;
