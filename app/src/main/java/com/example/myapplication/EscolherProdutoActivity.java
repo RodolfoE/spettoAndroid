@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.myapplication.Adaptador.EscolherProdutoAdaptador;
@@ -41,6 +42,8 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
     private ItensPedidoFeito[] mItensPedido;
     private EscolherProdutoActivity mCtx;
     private int mIdPedido = -1;
+    private int mIdDono = -1;
+    private String mTipoDono = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,17 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
             setContentView(R.layout.activity_escolher_produto);
             Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
+
+            int idPedido = Integer.parseInt(getIntent().getStringExtra("id_pedido"));
+            if (idPedido != 0){
+                mIdPedido = idPedido;
+            }
+
+            int idDono = Integer.parseInt(getIntent().getStringExtra("id_dono"));
+            if (idDono != -1){
+                mIdDono = idDono;
+                mTipoDono = getIntent().getStringExtra("tipo_dono");
+            }
 
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -293,9 +307,9 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
         Produto[] produtos = mProdutosSelecionados.toArray(new Produto[mProdutosSelecionados.size()]);
         ItensPedido itens;
         if (mIdPedido != -1){
-            itens = new ItensPedido(produtos, "mesa", 1, mIdPedido,1);
+            itens = new ItensPedido(produtos, mTipoDono, mIdDono, mIdPedido,1);
         } else {
-            itens = new ItensPedido(produtos, "mesa", 1,1);
+            itens = new ItensPedido(produtos, mTipoDono, mIdDono,1);
         }
         postarProduto(itens);
     }

@@ -1,5 +1,6 @@
 package com.example.myapplication.util;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -63,5 +64,14 @@ public class utils {
         Snackbar mySnackbar = Snackbar.make(ctx, "Ocorreu um erro.", 3000);
         mySnackbar.show();
         Log.e("Erro", e.getMessage());
+    }
+
+    public static ProgressDialog showLoading(Context ctx, String msg){
+        final ProgressDialog progress = new ProgressDialog(ctx);
+        progress.setTitle("Carregando");
+        progress.setMessage(msg);
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
+        return progress;
     }
 }

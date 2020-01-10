@@ -30,7 +30,7 @@ public interface EscolherProdutosAPI {
     @POST("/pedidos/post_pedido_itens")
     Call<ItensPedido> postProduto(@Body ItensPedido itens_pedido);
 
-    @POST("/pedidos/obter_mesas")
+    @GET("/pedidos/obter_mesas")
     Call<DonoDoPedido> getMesas(@Body int id_dono);
 
     @GET("/pedidos/obter_mesas")
@@ -48,5 +48,10 @@ public interface EscolherProdutosAPI {
     @GET("/pedidos/obter_clientes_delivery")
     Call<ClienteDelivery[]> getClientesDelivery();
 
+    @POST("/pedidos/cadastrar_cliente")
+    Call<Cliente> postCliente(@Body Cliente cliente);
+
+    @POST("/pedidos/cadastrar_mesa")
+    Call<Mesa> postMesa(@Body Mesa mesa);
 
 }

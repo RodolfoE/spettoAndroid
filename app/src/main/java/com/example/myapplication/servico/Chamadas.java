@@ -4,7 +4,9 @@ import android.util.Log;
 
 import com.example.myapplication.HttpRequests.EscolherProdutosAPI;
 import com.example.myapplication.HttpRequests.NetworkClient;
+import com.example.myapplication.modelos.Cliente;
 import com.example.myapplication.modelos.ItensPedidoFeito;
+import com.example.myapplication.modelos.Mesa;
 import com.google.android.material.snackbar.Snackbar;
 
 import retrofit2.Call;
@@ -38,6 +40,20 @@ public class Chamadas {
         Call call;
 
         call = (idClienteDel != -1) ? produtos.getClientesDelivery(idClienteDel) : produtos.getClientesDelivery();
+        call.enqueue(callback);
+    }
+
+    public static void postCliente(Cliente cliente, Callback callback){
+        Retrofit retrofit = NetworkClient.getRetrofitClient();
+        EscolherProdutosAPI produtos = retrofit.create(EscolherProdutosAPI.class);
+        Call call = produtos.postCliente(cliente);
+        call.enqueue(callback);
+    }
+
+    public static void postMesa(Mesa mesa, Callback callback){
+        Retrofit retrofit = NetworkClient.getRetrofitClient();
+        EscolherProdutosAPI produtos = retrofit.create(EscolherProdutosAPI.class);
+        Call call = produtos.postMesa(mesa);
         call.enqueue(callback);
     }
 }

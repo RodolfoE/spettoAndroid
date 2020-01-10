@@ -19,9 +19,10 @@ import com.example.myapplication.modelos.Produto;
 import com.example.myapplication.ui.home.HomeFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ListaDonoDoPedido extends RecyclerView.Adapter<ListaDonoDoPedido.MyViewHolder> {
-    private Object[] mDataset;
+    private ArrayList<Object> mDataset = new ArrayList<>();
     private ItemClickListener mListener;
     private int VIEW_PEDIDO_MESA = 0;
     private int VIEW_PEDIDO_CLIENTE = 1;
@@ -37,15 +38,15 @@ public class ListaDonoDoPedido extends RecyclerView.Adapter<ListaDonoDoPedido.My
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public ListaDonoDoPedido(HomeFragment homeFragment, Object[] myDataset, ItemClickListener listener) {
-        mDataset = myDataset;
+        mDataset.addAll(Arrays.asList(myDataset));
         mListener = listener;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (mDataset[position] instanceof Mesa) {
+        if (mDataset.get(position) instanceof Mesa) {
             return VIEW_PEDIDO_MESA;
-        } else if (mDataset[position] instanceof Cliente) {
+        } else if (mDataset.get(position) instanceof Cliente) {
             return VIEW_PEDIDO_CLIENTE;
         } else {
             return VIEW_PEDIDO_CLIENTE_DELIVERY;
@@ -71,15 +72,15 @@ public class ListaDonoDoPedido extends RecyclerView.Adapter<ListaDonoDoPedido.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        Object item = mDataset[position];
-        if (mDataset[position] instanceof Mesa){
+        Object item = mDataset.get(position);
+        if (mDataset.get(position) instanceof Mesa){
             ((TextView) holder.relativeLayout.findViewById(R.id.nome)).setText(((Mesa) item).getIdMesa() + "");
             ((ImageButton) holder.relativeLayout.findViewById(R.id.disponivel)).setImageResource(((Mesa) item).getEmUso() == 1 ? R.drawable.disponivel : R.drawable.indisponivel);
-        } else if (mDataset[position] instanceof Cliente){
-            ((TextView) holder.relativeLayout.findViewById(R.id.nome)).setText(( (Cliente) mDataset[position]).getNome() + "");
+        } else if (mDataset.get(position) instanceof Cliente){
+            ((TextView) holder.relativeLayout.findViewById(R.id.nome)).setText(( (Cliente) mDataset.get(position)).getNome() + "");
             ((ImageButton) holder.relativeLayout.findViewById(R.id.disponivel)).setImageResource(((Cliente) item).getEmUso() == 1 ? R.drawable.disponivel : R.drawable.indisponivel);
         } else {
-            ((TextView) holder.relativeLayout.findViewById(R.id.nome)).setText(( (ClienteDelivery) mDataset[position]).getNome() + "");
+            ((TextView) holder.relativeLayout.findViewById(R.id.nome)).setText(( (ClienteDelivery) mDataset.get(position)).getNome() + "");
             ((ImageButton) holder.relativeLayout.findViewById(R.id.disponivel)).setImageResource(((ClienteDelivery) item).getEmUso() == 1 ? R.drawable.disponivel : R.drawable.indisponivel);
         }
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -88,32 +89,23 @@ public class ListaDonoDoPedido extends RecyclerView.Adapter<ListaDonoDoPedido.My
                 mListener.abrirItensPedido(position);
             }
         });
-        /*
-        ((TextView) holder.relativeLayout.findViewById(R.id.nome)).setText(mDataset[position].getNome());
-        ((TextView) holder.relativeLayout.findViewById(R.id.preco)).setText("R$" + mDataset[position].getValor());
-        ((TextView) holder.relativeLayout.findViewById(R.id.qtd)).setText(mDataset[position].getQtd() + "");
-        (holder.relativeLayout.findViewById(R.id.add)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.addProduto(v, position);
-            }
-        });
-        (holder.relativeLayout.findViewById(R.id.remover)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.removerProduto(v, position);
-            }
-        });*/
+    }
+
+    public void addCliente(Cliente cli){
+        this.mDataset.add(cli);
+    }
+    public void add(Object i){
+        this.mDataset.add(0, i);
     }
 
     // convenience method for getting data at click position
     public Object getItem(int id) {
-        return mDataset[id];
+        return mDataset.get(id);
     }
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 
     // parent activity will implement this method to respond to click events

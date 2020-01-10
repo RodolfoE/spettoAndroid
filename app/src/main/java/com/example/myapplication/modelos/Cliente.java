@@ -4,6 +4,13 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Cliente {
+
+    public Cliente(String nome, String telefone, int fiel) {
+        this.nome = nome;
+        this.telefone = telefone;
+        this.fiel = fiel;
+    }
+
     @SerializedName("em_uso")
     @Expose
     private int emUso;
@@ -27,6 +34,18 @@ public class Cliente {
     @SerializedName("telefone")
     @Expose
     private String telefone;
+
+    public int getFiel() {
+        return fiel;
+    }
+
+    public void setFiel(int fiel) {
+        this.fiel = fiel;
+    }
+
+    @SerializedName("fiel")
+    @Expose
+    private int fiel;
 
 
     public void setIdPedido(int idPedido) {
