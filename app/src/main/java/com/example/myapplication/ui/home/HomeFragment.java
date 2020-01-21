@@ -299,7 +299,7 @@ public class HomeFragment extends Fragment implements ListaDonoDoPedido.ItemClic
             intent.putExtra("tipo_dono", "mesa");
             intent.putExtra("id_dono", ((Mesa) item).getIdDono() + "");
             intent.putExtra("id_pedido", ((Mesa) item).getIdPedido() + "");
-            Log.e("bla", ((Mesa) item).getIdDono() + "");
+            intent.putExtra("id_mesa", ((Mesa) item).getIdMesa() + "");
         } else if(item instanceof Cliente) {
             intent.putExtra("id_pedido", ((Cliente) item).getIdPedido() + "");
         } else {

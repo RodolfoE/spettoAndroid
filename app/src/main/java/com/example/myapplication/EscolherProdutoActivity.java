@@ -64,6 +64,11 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
                 mTipoDono = getIntent().getStringExtra("tipo_dono");
             }
 
+            String numMesa = getIntent().getStringExtra("id_mesa");
+            if (numMesa.length() != 0){
+                ((TextView) findViewById(R.id.numMesa)).setText(numMesa);
+            }
+
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
 
