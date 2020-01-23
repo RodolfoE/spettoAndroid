@@ -128,24 +128,21 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
             }
         });
         pesquisa.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
                 if ((Boolean)((EditText)findViewById(R.id.pesquisar)).getTag()) {
                     listagemProdutos(mCtx, s.toString());
                 }
             }
+        });
 
+        findViewById(R.id.fechar_pedido).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                utils.abrirActivity(getApplicationContext(), FecharPedido.class, null);
+            }
         });
     }
 

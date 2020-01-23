@@ -12,8 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".FecharPedido"
+            android:label="@string/title_activity_fechar_pedido"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".DonoDoPedido"
-            android:label="@string/title_activity_dono_do_pedido"></activity>
+            android:label="@string/title_activity_dono_do_pedido" />
         <activity
             android:name=".EscolherProdutoActivity"
             android:label="@string/title_activity_escolher_produto"

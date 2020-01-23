@@ -2,15 +2,20 @@ package com.example.myapplication.util;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
+import androidx.core.util.Pair;
+
+import com.example.myapplication.EscolherProdutoActivity;
 import com.example.myapplication.modelos.ItensPedidoFeito;
 import com.example.myapplication.modelos.Produto;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class utils {
     public static int qtdAparicoesArray(ItensPedidoFeito[] array, String id){
@@ -74,4 +79,25 @@ public class utils {
         progress.show();
         return progress;
     }
+
+    public static void abrirActivity(Context ctx, Class tClass, Map<String, Object> extras){
+        Intent intent = new Intent(ctx, tClass);
+        if (extras != null){
+            for (Map.Entry<String, Object> entry : extras.entrySet()) {
+                if (entry.getValue() instanceof String){
+                    intent.putExtra(entry.getKey(), entry.getValue().toString());
+                }
+                if (entry.getValue() instanceof Integer){
+                    intent.putExtra(entry.getKey(), ((Integer) entry.getValue()));
+                }
+
+                if (entry.getValue() instanceof Boolean){
+                    intent.putExtra(entry.getKey(), ((Boolean) entry.getValue()));
+                }
+            }
+        }
+        ctx.startActivity(intent);
+    }
+
+
 }

@@ -7,6 +7,7 @@ import com.example.myapplication.modelos.ItensPedido;
 import com.example.myapplication.modelos.ItensPedidoFeito;
 import com.example.myapplication.modelos.Mesa;
 import com.example.myapplication.modelos.Produto;
+import com.example.myapplication.modelos.Venda;
 
 import java.util.ArrayList;
 
@@ -54,4 +55,6 @@ public interface EscolherProdutosAPI {
     @POST("/pedidos/cadastrar_mesa")
     Call<Mesa> postMesa(@Body Mesa mesa);
 
+    @POST("/pedidos/fechar_pedido")
+    Call<Venda> fecharPedido(@Body Venda venda);
 }
