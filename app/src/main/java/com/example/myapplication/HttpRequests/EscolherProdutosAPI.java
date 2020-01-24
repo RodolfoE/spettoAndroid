@@ -3,6 +3,7 @@ package com.example.myapplication.HttpRequests;
 import com.example.myapplication.DonoDoPedido;
 import com.example.myapplication.modelos.Cliente;
 import com.example.myapplication.modelos.ClienteDelivery;
+import com.example.myapplication.modelos.FormaPagamento;
 import com.example.myapplication.modelos.ItensPedido;
 import com.example.myapplication.modelos.ItensPedidoFeito;
 import com.example.myapplication.modelos.Mesa;
@@ -57,4 +58,7 @@ public interface EscolherProdutosAPI {
 
     @POST("/pedidos/fechar_pedido")
     Call<Venda> fecharPedido(@Body Venda venda);
+
+    @GET("/pedidos/obter_formas_pagamento")
+    Call<FormaPagamento[]> obterFormasPagamento();
 }
