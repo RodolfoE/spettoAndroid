@@ -18,6 +18,14 @@ public class Venda {
     @Expose
     private boolean fechado;
 
+    public Venda(int id_pedido, double total, double qt_pago, boolean fechado, int id_forma) {
+        this.id_pedido = id_pedido;
+        this.total = total;
+        this.qt_pago = qt_pago;
+        this.fechado = fechado;
+        this.id_forma = id_forma;
+    }
+
     @SerializedName("nota")
     @Expose
     private int nota;

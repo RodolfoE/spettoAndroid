@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
+import androidx.collection.ArrayMap;
 import androidx.core.util.Pair;
 
 import com.example.myapplication.EscolherProdutoActivity;
@@ -80,7 +81,7 @@ public class utils {
         return progress;
     }
 
-    public static void abrirActivity(Context ctx, Class tClass, Map<String, Object> extras){
+    public static void abrirActivity(Context ctx, Class tClass, ArrayMap<String, Object> extras){
         Intent intent = new Intent(ctx, tClass);
         if (extras != null){
             for (Map.Entry<String, Object> entry : extras.entrySet()) {

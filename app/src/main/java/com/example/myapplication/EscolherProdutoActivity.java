@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.google.gson.Gson;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.collection.ArrayMap;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +29,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,6 +47,8 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
     private int mIdPedido = -1;
     private int mIdDono = -1;
     private String mTipoDono = "";
+    private String mIdMesa = "";
+    private final int STATIC_INTEGER_VALUE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +69,9 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
                 mTipoDono = getIntent().getStringExtra("tipo_dono");
             }
 
-            String numMesa = getIntent().getStringExtra("id_mesa");
-            if (numMesa.length() != 0){
-                ((TextView) findViewById(R.id.numMesa)).setText(numMesa);
+            mIdMesa = getIntent().getStringExtra("id_mesa");
+            if (mIdMesa.length() != 0){
+                ((TextView) findViewById(R.id.numMesa)).setText(mIdMesa);
             }
 
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -141,9 +146,30 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
         findViewById(R.id.fechar_pedido).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                utils.abrirActivity(getApplicationContext(), FecharPedido.class, null);
+                int forma = 1;
+                String total = "" + getValorPedido(mProdutos);
+                Intent i = new Intent(getApplicationContext(), FecharPedido.class);
+                i.putExtra("id_pedido", mIdPedido);
+                i.putExtra("forma", forma);
+                i.putExtra("total", total);
+                startActivityForResult(i, 1);
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (STATIC_INTEGER_VALUE) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    boolean fecharEstaActivityTmb = data.getBooleanExtra("fechado", false);
+                    if (fecharEstaActivityTmb)
+                        finish();
+                }
+                break;
+            }
+        }
     }
 
     private void listagemProdutos(final EscolherProdutoActivity ctx, String filtroNome) {

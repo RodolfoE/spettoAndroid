@@ -57,7 +57,7 @@ public interface EscolherProdutosAPI {
     Call<Mesa> postMesa(@Body Mesa mesa);
 
     @POST("/pedidos/fechar_pedido")
-    Call<Venda> fecharPedido(@Body Venda venda);
+    Call<Void> fecharPedido(@Body Venda venda);
 
     @GET("/pedidos/obter_formas_pagamento")
     Call<FormaPagamento[]> obterFormasPagamento();

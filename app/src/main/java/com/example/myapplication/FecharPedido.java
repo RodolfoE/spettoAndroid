@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.myapplication.HttpRequests.EscolherProdutosAPI;
@@ -41,6 +43,9 @@ public class FecharPedido extends AppCompatActivity {
             }
         });
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         initViews();
         fecharParcial();
     }
@@ -52,17 +57,23 @@ public class FecharPedido extends AppCompatActivity {
     private void fecharParcial(){
         Retrofit retrofit = NetworkClient.getRetrofitClient();
         EscolherProdutosAPI produtos = retrofit.create(EscolherProdutosAPI.class);
-        Call call = produtos.fecharPedido(new Venda());
-
+        int idPedido = getIntent().getIntExtra("id_pedido", -1);
+        int forma = getIntent().getIntExtra("forma", -1);
+        String total = getIntent().getStringExtra("total");
+        final boolean fechado = true;
+        Call call = produtos.fecharPedido(new Venda(idPedido, Double.parseDouble(total), 24, fechado, forma));
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
-
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("fechado", fechado);
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
             }
 
             @Override
             public void onFailure(Call call, Throwable t) {
-
+                utils.tratamentoDeErroPadrao(new Exception("Ocorreu um erro."), getCurrentFocus());
             }
         });
     }
