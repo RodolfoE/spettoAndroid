@@ -27,4 +27,12 @@ public class FormaPagamento {
     public void setNome(String nome) {
         this.nome = nome;
     }
+
+    public static String[] obterListaDeFormas(FormaPagamento[] item){
+        String[] retorno = new String[item.length];
+        for (int i = 0; i < item.length; i++) {
+            retorno[i] = item[i].nome;
+        }
+        return retorno;
+    }
 }
