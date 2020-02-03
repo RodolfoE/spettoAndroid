@@ -15,9 +15,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ScrollingTabContainerView;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import retrofit2.Call;
@@ -51,7 +53,7 @@ public class FecharPedido extends AppCompatActivity {
     }
 
     private void initViews(){
-        obterFormasDePagamento();
+        //obterFormasDePagamento();
     }
 
     public void fecharCompleto(View v){
@@ -70,6 +72,13 @@ public class FecharPedido extends AppCompatActivity {
         String totalParcial = ((TextView)findViewById(R.id.totalParcial)).getText().toString();
         final boolean fechado = false;
         fechar(new Venda(idPedido, Double.parseDouble(total), Double.parseDouble(totalParcial), fechado, forma));
+    }
+
+    public void alterarFormaPagamento(View v){
+        if (mDialog == null)
+            obterFormasDePagamento();
+        else
+            mDialog.show();
     }
 
     private void fechar(final Venda venda){
@@ -107,6 +116,7 @@ public class FecharPedido extends AppCompatActivity {
                     if (response.body() != null){
                         formas = (FormaPagamento[]) response.body();
                         mDialog = dialogOpcoesPagamento(formas);
+                        mDialog.show();
                     }
 
                     if (response.errorBody() != null){
@@ -135,6 +145,7 @@ public class FecharPedido extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mIdForma = forma[which].getId_forma();
+                        ((TextView) findViewById(R.id.formaDoPagamento)).setText(forma[which].getNome());
                     }
                 });
 
