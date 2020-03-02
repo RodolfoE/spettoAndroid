@@ -61,4 +61,7 @@ public interface EscolherProdutosAPI {
 
     @GET("/pedidos/obter_formas_pagamento")
     Call<FormaPagamento[]> obterFormasPagamento();
+
+    @GET("/pedidos/obter_parciais_pedido")
+    Call<Venda[]> obterParciaisPedido(@Query("itensSelect") String[] itensSelect,@Query("id_pedido") int id_pedido);
 }

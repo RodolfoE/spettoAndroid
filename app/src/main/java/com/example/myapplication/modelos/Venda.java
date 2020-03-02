@@ -14,6 +14,18 @@ public class Venda {
     @Expose
     private double qt_pago;
 
+    @SerializedName("valor")
+    @Expose
+    private double valor;
+
+    public double getValor() {
+        return valor;
+    }
+
+    public void setValor(double valor) {
+        this.valor = valor;
+    }
+
     @SerializedName("fechado")
     @Expose
     private boolean fechado;

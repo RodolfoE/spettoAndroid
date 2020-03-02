@@ -152,6 +152,8 @@ public class EscolherProdutoActivity extends AppCompatActivity implements Escolh
                 i.putExtra("id_pedido", mIdPedido);
                 i.putExtra("forma", forma);
                 i.putExtra("total", total);
+                i.putExtra("id_dono", mIdDono);
+
                 startActivityForResult(i, 1);
             }
         });

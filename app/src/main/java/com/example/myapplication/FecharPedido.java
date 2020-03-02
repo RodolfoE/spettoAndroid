@@ -28,7 +28,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class FecharPedido extends AppCompatActivity {
-    private int mIdForma;
+    private int mIdForma = -1;
     private AlertDialog mDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +37,6 @@ public class FecharPedido extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -53,25 +44,38 @@ public class FecharPedido extends AppCompatActivity {
     }
 
     private void initViews(){
-        //obterFormasDePagamento();
+        int idPedido = getIntent().getIntExtra("id_pedido", -1);
+        obterValoresDoProduto(idPedido);
     }
 
     public void fecharCompleto(View v){
-        int idPedido = getIntent().getIntExtra("id_pedido", -1);
-        int forma = getIntent().getIntExtra("forma", -1);
-        String total = getIntent().getStringExtra("total");
-        String totalParcial = ((TextView)findViewById(R.id.totalParcial)).getText().toString();
-        final boolean fechado = true;
-        fechar(new Venda(idPedido, Double.parseDouble(total), Double.parseDouble(totalParcial), fechado, forma));
+        if (validarPedido()) {
+            int idPedido = getIntent().getIntExtra("id_pedido", -1);
+            String total = getIntent().getStringExtra("total");
+            String totalParcial = ((TextView) findViewById(R.id.totalParcial)).getText().toString();
+            final boolean fechado = true;
+            fechar(new Venda(idPedido, Double.parseDouble(total), Double.parseDouble(totalParcial), fechado, mIdForma));
+        }
     }
 
     public void fecharParcial(View v){
-        int idPedido = getIntent().getIntExtra("id_pedido", -1);
-        int forma = getIntent().getIntExtra("forma", -1);
-        String total = getIntent().getStringExtra("total");
+        if (validarPedido()){
+            int idPedido = getIntent().getIntExtra("id_pedido", -1);
+            String total = getIntent().getStringExtra("total");
+            String totalParcial = ((TextView)findViewById(R.id.totalParcial)).getText().toString();
+            final boolean fechado = false;
+            fechar(new Venda(idPedido, Double.parseDouble(total), Double.parseDouble(totalParcial), fechado, mIdForma));
+        }
+    }
+
+    private boolean validarPedido(){
         String totalParcial = ((TextView)findViewById(R.id.totalParcial)).getText().toString();
-        final boolean fechado = false;
-        fechar(new Venda(idPedido, Double.parseDouble(total), Double.parseDouble(totalParcial), fechado, forma));
+        if (mIdForma == -1 || totalParcial.length() == 0){
+            Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content), "Os campos 'Forma de Pagamento' e 'Valor' são obrigatórios.", 3000);
+            mySnackbar.show();
+            return false;
+        }
+        return true;
     }
 
     public void alterarFormaPagamento(View v){
@@ -126,8 +130,6 @@ public class FecharPedido extends AppCompatActivity {
                     View rootView = ((Activity)getBaseContext()).getWindow().getDecorView().findViewById(android.R.id.content);
                     utils.tratamentoDeErroPadrao(e, rootView);
                 }
-
-  //
             }
 
             @Override
@@ -152,5 +154,52 @@ public class FecharPedido extends AppCompatActivity {
          return builder.create();
     }
 
+    private void obterValoresDoProduto(int idPedido){
+        //obter e inserir vlr total
+        final String total = getIntent().getStringExtra("total");
+        ((TextView) findViewById(R.id.vlr_total)).setText(total);
 
+        //obter e inserir vlor parcial
+        Retrofit retrofit = NetworkClient.getRetrofitClient();
+        EscolherProdutosAPI produtos = retrofit.create(EscolherProdutosAPI.class);
+        String[] itensSelect = new String[1];
+        itensSelect[0] = "valor";
+        Call call = produtos.obterParciaisPedido(itensSelect, idPedido);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                try{
+                    Venda[] vendas;
+                    if (response.body() != null){
+                        vendas = (Venda[]) response.body();
+                        double vlrParcial = obterQtdTotalPago(vendas);
+                        ((TextView) findViewById(R.id.Pago)).setText( vlrParcial + "");
+
+                        double restante = Double.parseDouble(total) - vlrParcial;
+                        ((TextView) findViewById(R.id.restante)).setText( restante + "");
+                    }
+
+                    if (response.errorBody() != null){
+                        utils.tratamentoDeErroPadrao(new Exception("Ocorreu um erro."), getCurrentFocus());
+                    }
+                } catch (Exception e){
+                    View rootView = ((Activity)getBaseContext()).getWindow().getDecorView().findViewById(android.R.id.content);
+                    utils.tratamentoDeErroPadrao(e, rootView);
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                utils.tratamentoDeErroPadrao(new Exception("Ocorreu um erro."), getCurrentFocus());
+            }
+        });
+    }
+
+    private double obterQtdTotalPago(Venda[] vendas){
+        double total = 0;
+        for (int i = 0; i < vendas.length; i++){
+            total += vendas[i].getValor();
+        }
+        return total;
+    }
 }
