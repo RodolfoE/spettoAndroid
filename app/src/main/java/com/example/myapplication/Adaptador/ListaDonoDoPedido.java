@@ -5,19 +5,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.DonoDoPedido;
-import com.example.myapplication.EscolherProdutoActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.modelos.Cliente;
 import com.example.myapplication.modelos.ClienteDelivery;
 import com.example.myapplication.modelos.Mesa;
-import com.example.myapplication.modelos.Produto;
 import com.example.myapplication.ui.home.HomeFragment;
 
 import java.util.ArrayList;

@@ -1,16 +1,14 @@
 package com.example.myapplication.HttpRequests;
 
-import com.example.myapplication.DonoDoPedido;
 import com.example.myapplication.modelos.Cliente;
 import com.example.myapplication.modelos.ClienteDelivery;
 import com.example.myapplication.modelos.FormaPagamento;
 import com.example.myapplication.modelos.ItensPedido;
 import com.example.myapplication.modelos.ItensPedidoFeito;
 import com.example.myapplication.modelos.Mesa;
+import com.example.myapplication.modelos.Praca;
 import com.example.myapplication.modelos.Produto;
 import com.example.myapplication.modelos.Venda;
-
-import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -33,7 +31,7 @@ public interface EscolherProdutosAPI {
     Call<ItensPedido> postProduto(@Body ItensPedido itens_pedido);
 
     @GET("/pedidos/obter_mesas")
-    Call<DonoDoPedido> getMesas(@Body int id_dono);
+    Call<Mesa> getMesas(@Body int id_dono);
 
     @GET("/pedidos/obter_mesas")
     Call<Mesa[]> getMesas();
@@ -64,4 +62,10 @@ public interface EscolherProdutosAPI {
 
     @GET("/pedidos/obter_parciais_pedido")
     Call<Venda[]> obterParciaisPedido(@Query("itensSelect") String[] itensSelect,@Query("id_pedido") int id_pedido);
+
+    @GET("/praca/get_pracas")
+    Call<Praca[]> obterPracas();
+
+    @POST("/produto/post_produto")
+    Call<Void> cadastrarProduto(@Body Produto produto);
 }

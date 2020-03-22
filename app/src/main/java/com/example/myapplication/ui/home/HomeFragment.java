@@ -1,45 +1,32 @@
 package com.example.myapplication.ui.home;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CheckBox;
-import android.widget.Checkable;
 import android.widget.EditText;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.Adaptador.ListaDonoDoPedido;
-import com.example.myapplication.DonoDoPedido;
 import com.example.myapplication.EscolherProdutoActivity;
-import com.example.myapplication.HttpRequests.EscolherProdutosAPI;
-import com.example.myapplication.HttpRequests.NetworkClient;
 import com.example.myapplication.R;
 import com.example.myapplication.modelos.Cliente;
 import com.example.myapplication.modelos.ClienteDelivery;
-import com.example.myapplication.modelos.ItensPedidoFeito;
 import com.example.myapplication.modelos.Mesa;
 import com.example.myapplication.servico.Chamadas;
 import com.example.myapplication.util.utils;
-import com.google.android.material.snackbar.Snackbar;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class HomeFragment extends Fragment implements ListaDonoDoPedido.ItemClickListener {
     private RecyclerView mRecyclerView;
@@ -50,7 +37,7 @@ public class HomeFragment extends Fragment implements ListaDonoDoPedido.ItemClic
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        mRoot = inflater.inflate(R.layout.fragment_home, container, false);
+        mRoot = inflater.inflate(R.layout.fragment_home1, container, false);
         initViews();
         if (obterMesa){
             obterMesa = false;

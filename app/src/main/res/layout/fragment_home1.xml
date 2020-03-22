@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/gray"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!--Buttoes-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/addMesa"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="+ Mesa"
+                    android:layout_margin="0dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:layout_weight="1" />
+                <Button
+                    android:visibility="gone"
+                    android:id="@+id/addCliente"
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:text="+ Cliente"
+                     android:layout_weight="1" />
+
+
+                 <Button
+                     android:visibility="gone"
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:text="+ Delivery"
+                     android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <!-- Layout de Add cliente -->
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/layout_cliente"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/nome"
+                    android:hint="Nome"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tel"
+                    android:hint="Telefone"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <CheckBox android:id="@+id/checkbox_fiel"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Fiel"/>
+                    <Button
+                        android:id="@+id/cadastrarBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cadastrar"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!-- Layout de Add mesa -->
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/layout_mesa"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textSize="30dp"
+                    android:textStyle="bold"
+                    android:layout_height="wrap_content"
+                    android:text="N°: "/>
+                <EditText
+                    android:id="@+id/numMesa"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:background="@color/white"
+                    android:layout_height="match_parent"
+                    android:inputType="number"
+                    android:hint="N° Mesa"/>
+                <Button
+                    android:id="@+id/cadastrarMesa"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="match_parent"
+                    android:text="Cadastrar"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="4dp"
+            android:id="@+id/my_recycler_view2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
