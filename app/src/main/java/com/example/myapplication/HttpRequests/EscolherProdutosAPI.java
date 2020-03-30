@@ -1,5 +1,6 @@
 package com.example.myapplication.HttpRequests;
 
+import com.example.myapplication.modelos.Categoria;
 import com.example.myapplication.modelos.Cliente;
 import com.example.myapplication.modelos.ClienteDelivery;
 import com.example.myapplication.modelos.FormaPagamento;
@@ -66,6 +67,16 @@ public interface EscolherProdutosAPI {
     @GET("/praca/get_pracas")
     Call<Praca[]> obterPracas();
 
+    @GET("/produto/get_categoria")
+    Call<Categoria[]> obterCategorias();
+
     @POST("/produto/post_produto")
     Call<Void> cadastrarProduto(@Body Produto produto);
+
+    @POST("/praca/post_praca")
+    Call<Void> cadastrarPraca(@Body Praca praca);
+
+    @POST("/produto/post_categoria")
+    Call<Void> cadastrarCategoria(@Body Categoria categoria);
+
 }

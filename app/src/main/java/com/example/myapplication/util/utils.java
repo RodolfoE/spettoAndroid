@@ -1,15 +1,20 @@
 package com.example.myapplication.util;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 
 import androidx.collection.ArrayMap;
 import androidx.core.util.Pair;
 
 import com.example.myapplication.EscolherProdutoActivity;
+import com.example.myapplication.R;
 import com.example.myapplication.modelos.ItensPedidoFeito;
 import com.example.myapplication.modelos.Produto;
 import com.google.android.material.snackbar.Snackbar;
@@ -100,5 +105,20 @@ public class utils {
         ctx.startActivity(intent);
     }
 
+    public static Dialog openDialog(String titulo, View layout, Context context) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(layout, new LinearLayout.LayoutParams(500, ViewGroup.LayoutParams.MATCH_PARENT));
+        dialog.setTitle(titulo);
+        dialog.setCancelable(true);
+        dialog.show();
+        return dialog;
+    }
 
+    public static void esconderTeclado(View rootView) {
+        View view = rootView.getRootView();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) rootView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 }

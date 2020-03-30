@@ -30,17 +30,29 @@ public class Produto {
     @Expose
     private String idProduto;
 
-    public String getCategoria() {
+    public int getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(int categoria) {
         this.categoria = categoria;
     }
 
-    @SerializedName("categoria")
+    @SerializedName("id_categoria")
     @Expose
-    private String categoria;
+    private int categoria;
+
+    public int getEstoque() {
+        return estoque;
+    }
+
+    public void setEstoque(int estoque) {
+        this.estoque = estoque;
+    }
+
+    @SerializedName("estoque")
+    @Expose
+    private int estoque;
 
     @SerializedName("valor_de_custo")
     @Expose

@@ -18,33 +18,44 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+
+                android:inputType="textCapSentences|textFilter|textNoSuggestions"
+                android:importantForAutofill="no"
                 android:id="@+id/nomeProduto"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="5dp"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_weight="3"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Praça:"/>
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="fill_parent"
-                android:layout_height="61dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:layout_marginLeft="5dp"
-                android:spinnerMode="dropdown"
-                />
+                android:orientation="vertical"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Praça:"/>
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="61dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:spinnerMode="dropdown" />
+            </LinearLayout>
 
+            <Button
+                android:id="@+id/btnCadastrarPraca"
+                android:layout_margin="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="+" />
         </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -73,19 +84,51 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_weight="3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categoria:"/>
+                <Spinner
+                    android:id="@+id/spinnerCategoria"
+                    android:layout_width="fill_parent"
+                    android:layout_height="61dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:spinnerMode="dropdown" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnCadastrarCategoria"
+                android:layout_margin="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="+" />
+        </LinearLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Categoria"
+            android:hint="Qtd em estoque"
             app:endIconMode="clear_text">
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                android:inputType="text"
-                android:id="@+id/categoriaProduto"
+                android:inputType="number"
+                android:id="@+id/qtdEstoqueProduto"
                 />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
