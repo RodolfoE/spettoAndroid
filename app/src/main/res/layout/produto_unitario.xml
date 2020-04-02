@@ -1,6 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="5dp"
+    android:padding="10dp"
+    >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Carne com fritas"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:id="@+id/produto_nome"
+        />
+
+    <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Preço: "
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/produto_preco"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="R$54"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Qtd Estoque: "
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/produto_qtd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="54"
+                android:textColor="#000000" />
+        </LinearLayout>
+
+        <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Praça: "
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/produto_praca"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cozinha Geral"
+                android:textColor="#000000" />
+        </LinearLayout>
+        -->
+    </LinearLayout>
+
+
+</LinearLayout>

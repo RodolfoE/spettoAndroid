@@ -13,13 +13,14 @@ import com.example.myapplication.R;
 import com.example.myapplication.modelos.Cliente;
 import com.example.myapplication.modelos.ClienteDelivery;
 import com.example.myapplication.modelos.Mesa;
+import com.example.myapplication.modelos.Produto;
 import com.example.myapplication.ui.home.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ListaProduto extends RecyclerView.Adapter<ListaProduto.MyViewHolder>  {
-    private ArrayList<Object> mDataset = new ArrayList<>();
+    private ArrayList<Produto> mDataset = new ArrayList<>();
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout relativeLayout;
@@ -29,8 +30,7 @@ public class ListaProduto extends RecyclerView.Adapter<ListaProduto.MyViewHolder
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public ListaProduto(Object[] myDataset) {
+    public ListaProduto(Produto[] myDataset) {
         mDataset.addAll(Arrays.asList(myDataset));
     }
 
@@ -45,11 +45,14 @@ public class ListaProduto extends RecyclerView.Adapter<ListaProduto.MyViewHolder
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-
+        ((TextView)holder.relativeLayout.findViewById(R.id.produto_nome)).setText(mDataset.get(position).getNome());
+        ((TextView)holder.relativeLayout.findViewById(R.id.produto_preco)).setText("R$ " + mDataset.get(position).getValor());
+        ((TextView)holder.relativeLayout.findViewById(R.id.produto_qtd)).setText(mDataset.get(position).getQtd() + "");
+        //((TextView)holder.relativeLayout.findViewById(R.id.produto_praca)).setText(mDataset.get(position).getIdPraca());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mDataset.size();
     }
 }
