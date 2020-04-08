@@ -4,6 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -35,6 +38,12 @@ public class HomeFragment extends Fragment implements ListaDonoDoPedido.ItemClic
     private HomeFragment mCtx = this;
     private boolean obterMesa = true;
 
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         mRoot = inflater.inflate(R.layout.fragment_home1, container, false);
@@ -55,6 +64,13 @@ public class HomeFragment extends Fragment implements ListaDonoDoPedido.ItemClic
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Add your menu entries here
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
     private void initViews(){
         mRecyclerView = mRoot.findViewById(R.id.my_recycler_view2);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -69,6 +85,7 @@ public class HomeFragment extends Fragment implements ListaDonoDoPedido.ItemClic
             }
         });
 
+        /*
         ///Add cliente
         mRoot.findViewById(R.id.addCliente).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,26 +97,7 @@ public class HomeFragment extends Fragment implements ListaDonoDoPedido.ItemClic
                     mRoot.findViewById(R.id.layout_cliente).setVisibility(View.VISIBLE);
                 }
             }
-        });
-
-        ///Add mesa
-        mRoot.findViewById(R.id.addMesa).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                View item = mRoot.findViewById(R.id.layout_mesa);
-                if (item.getVisibility() == View.GONE){
-                    //Exibir layout cliente e esconder mesa
-                    mRoot.findViewById(R.id.layout_mesa).setVisibility(View.VISIBLE);
-                    mRoot.findViewById(R.id.layout_cliente).setVisibility(View.GONE);
-                    if(mRoot.findViewById(R.id.numMesa).requestFocus()) {
-
-                    }
-
-                } else {
-                    item.setVisibility(View.GONE);
-                }
-            }
-        });
+        });*/
 
         //dar onclick para o botao de cadastrar cliente
         mRoot.findViewById(R.id.cadastrarMesa).setOnClickListener(new View.OnClickListener() {
@@ -108,6 +106,32 @@ public class HomeFragment extends Fragment implements ListaDonoDoPedido.ItemClic
                 interfaceAddNovaMesa(mRoot, mRoot.findViewById(R.id.layout_mesa), mRecyclerView);
             }
         });
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mais_mesa:
+                exibirAddrMesa();
+                return true;
+            default:
+                break;
+        }
+        return false;
+    }
+
+    private void exibirAddrMesa(){
+        View item = mRoot.findViewById(R.id.layout_mesa);
+        if (item.getVisibility() == View.GONE){
+            //Exibir layout cliente e esconder mesa
+            mRoot.findViewById(R.id.layout_mesa).setVisibility(View.VISIBLE);
+            mRoot.findViewById(R.id.layout_cliente).setVisibility(View.GONE);
+            if(mRoot.findViewById(R.id.numMesa).requestFocus()) {
+
+            }
+
+        } else {
+            item.setVisibility(View.GONE);
+        }
     }
 
     private void interfaceAddNovaMesa(final View view, final View layoutMesa, final RecyclerView recyclerView){

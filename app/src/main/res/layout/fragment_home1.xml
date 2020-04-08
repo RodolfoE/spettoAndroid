@@ -15,38 +15,6 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <!--Buttoes-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <Button
-                    android:id="@+id/addMesa"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="+ Mesa"
-                    android:layout_margin="0dp"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:layout_weight="1" />
-                <Button
-                    android:visibility="gone"
-                    android:id="@+id/addCliente"
-                     android:layout_width="0dp"
-                     android:layout_height="wrap_content"
-                     android:text="+ Cliente"
-                     android:layout_weight="1" />
-
-
-                 <Button
-                     android:visibility="gone"
-                     android:layout_width="0dp"
-                     android:layout_height="wrap_content"
-                     android:text="+ Delivery"
-                     android:layout_weight="1" />
-
-            </LinearLayout>
-
             <!-- Layout de Add cliente -->
             <LinearLayout
                 android:visibility="gone"

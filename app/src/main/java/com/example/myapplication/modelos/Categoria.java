@@ -5,6 +5,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class Categoria {
 
+    public Categoria() {
+        this.id_categoria = id_categoria;
+        this.nome = nome;
+    }
+    public Categoria(int id_categoria, String nome) {
+        this.id_categoria = id_categoria;
+        this.nome = nome;
+    }
+
     @SerializedName("id_categoria")
     @Expose
     int id_categoria;

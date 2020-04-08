@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ListaProduto extends RecyclerView.Adapter<ListaProduto.MyViewHolder>  {
+    private listaProdutoClick mListaProdutoClick;
     private ArrayList<Produto> mDataset = new ArrayList<>();
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -30,8 +31,9 @@ public class ListaProduto extends RecyclerView.Adapter<ListaProduto.MyViewHolder
         }
     }
 
-    public ListaProduto(Produto[] myDataset) {
+    public ListaProduto(Produto[] myDataset, listaProdutoClick listaProdutoClick) {
         mDataset.addAll(Arrays.asList(myDataset));
+        this.mListaProdutoClick = listaProdutoClick;
     }
 
     @Override
@@ -49,10 +51,21 @@ public class ListaProduto extends RecyclerView.Adapter<ListaProduto.MyViewHolder
         ((TextView)holder.relativeLayout.findViewById(R.id.produto_preco)).setText("R$ " + mDataset.get(position).getValor());
         ((TextView)holder.relativeLayout.findViewById(R.id.produto_qtd)).setText(mDataset.get(position).getQtd() + "");
         //((TextView)holder.relativeLayout.findViewById(R.id.produto_praca)).setText(mDataset.get(position).getIdPraca());
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListaProdutoClick.onClickProduto(mDataset.get(position).getIdProduto());
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    public interface listaProdutoClick{
+        public void onClickProduto(String idProduto);
     }
 }

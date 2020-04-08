@@ -1,26 +1,17 @@
 package com.example.myapplication.ui.cadastroProduto;
-
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.QuickContactBadge;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.myapplication.HttpRequests.EscolherProdutosAPI;
 import com.example.myapplication.HttpRequests.NetworkClient;
@@ -37,30 +28,49 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class cadastroProdutoFragment extends Fragment {
-    private View mRoot;
     private Praca[] mPracas;
     private Categoria[] mCategorias;
+    private String mIdProduto = "";
+    private View mRoot;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-            ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_cadastro_produto, container, false);
-        mRoot = root;
+    public View onCreateView(@NonNull LayoutInflater inflater,  ViewGroup container, Bundle savedInstanceState) {
+        mRoot = inflater.inflate(R.layout.fragment_cadastro_produto, container, false);
+        String idProduto = getArguments().getString("ID_PRODUTO");
+        if (idProduto != null)
+            obterProduto(idProduto);
+        else
+            initViews(mRoot, null);
+        return mRoot;
+    }
+
+    private void initViews(final View view, final Produto produto){
         obterPracas();
         obterCategorias();
 
-        ((Button) root.findViewById(R.id.btnCadastrar)).setOnClickListener(new View.OnClickListener() {
+        if (produto != null){
+            ((Button) view.findViewById(R.id.btnCadastrar)).setText("Atualizar");
+            ((EditText) view.findViewById(R.id.nomeProduto)).setText(produto.getNome());
+            ((EditText) view.findViewById(R.id.precoProduto)).setText(produto.getValor());
+            ((EditText) view.findViewById(R.id.precoCustoProduto)).setText(produto.getValor_de_custo());
+            ((EditText) view.findViewById(R.id.qtdEstoqueProduto)).setText(produto.getEstoque() + "");
+        }
+
+        view.findViewById(R.id.btnCadastrar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                utils.esconderTeclado(mRoot);
-                salvarCadastro();
+                utils.esconderTeclado(getView());
+                if (produto != null)
+                    atualizarCadastro();
+                else
+                    salvarCadastro();
             }
         });
 
-        ((Button) root.findViewById(R.id.btnCadastrarPraca)).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.btnCadastrarPraca).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final View child = getLayoutInflater().inflate(R.layout.cadastro_praca, null);
-                final Dialog dialog = utils.openDialog("Cadastrar Praça", child, mRoot.getContext());
+                final Dialog dialog = utils.openDialog("Cadastrar Praça", child, getContext());
                 (child.findViewById(R.id.btnCadastrarPraca)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -74,7 +84,7 @@ public class cadastroProdutoFragment extends Fragment {
                                 if (response.errorBody() == null){
                                     utils.esconderTeclado(child);
                                     dialog.dismiss();
-                                    Snackbar mySnackbar = Snackbar.make(mRoot.getRootView().findViewById(android.R.id.content), "Praça cadastrada", 3000);
+                                    Snackbar mySnackbar = Snackbar.make(view.findViewById(android.R.id.content), "Praça cadastrada", 3000);
                                     mySnackbar.show();
                                     obterPracas();
                                 }
@@ -82,7 +92,7 @@ public class cadastroProdutoFragment extends Fragment {
 
                             @Override
                             public void onFailure(Call call, Throwable t) {
-                                Snackbar mySnackbar = Snackbar.make(mRoot.getRootView().findViewById(android.R.id.content), "Erro | Praça Não Cadastrado", 3000);
+                                Snackbar mySnackbar = Snackbar.make(view.findViewById(android.R.id.content), "Erro | Praça Não Cadastrado", 3000);
                                 mySnackbar.show();
                                 Log.e("Erro", t.getMessage());
                             }
@@ -92,11 +102,11 @@ public class cadastroProdutoFragment extends Fragment {
             }
         });
 
-        root.findViewById(R.id.btnCadastrarCategoria).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.btnCadastrarCategoria).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final View child = getLayoutInflater().inflate(R.layout.cadastro_categoria, null);
-                final Dialog dialog = utils.openDialog("Cadastrar Praça", child, mRoot.getContext());
+                final Dialog dialog = utils.openDialog("Cadastrar Praça", child, getContext());
                 (child.findViewById(R.id.btnCadastrarCategoria)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -109,7 +119,7 @@ public class cadastroProdutoFragment extends Fragment {
                                 if (response.errorBody() == null){
                                     utils.esconderTeclado(child);
                                     dialog.dismiss();
-                                    Snackbar mySnackbar = Snackbar.make(mRoot.getRootView().findViewById(android.R.id.content), "Categoria cadastrada", 3000);
+                                    Snackbar mySnackbar = Snackbar.make(view.findViewById(android.R.id.content), "Categoria cadastrada", 3000);
                                     mySnackbar.show();
                                     obterCategorias();
                                 }
@@ -117,7 +127,7 @@ public class cadastroProdutoFragment extends Fragment {
 
                             @Override
                             public void onFailure(Call call, Throwable t) {
-                                Snackbar mySnackbar = Snackbar.make(mRoot.getRootView().findViewById(android.R.id.content), "Erro | Categoria Não Cadastrado", 3000);
+                                Snackbar mySnackbar = Snackbar.make(view.findViewById(android.R.id.content), "Erro | Categoria Não Cadastrado", 3000);
                                 mySnackbar.show();
                                 Log.e("Erro", t.getMessage());
                             }
@@ -126,7 +136,10 @@ public class cadastroProdutoFragment extends Fragment {
                 });
             }
         });
-        return root;
+    }
+
+    private void atualizarCadastro(){
+
     }
 
     private void cadastrarCategoria(Categoria categoria, Callback callback){
@@ -231,24 +244,23 @@ public class cadastroProdutoFragment extends Fragment {
                 @Override
                 public void onResponse(Call call, Response response) {
                     if (response.errorBody() == null){
-                        Snackbar mySnackbar = Snackbar.make(mRoot.getRootView().findViewById(android.R.id.content), "Produto Cadastrado", 3000);
+                        Snackbar mySnackbar = Snackbar.make(mRoot.findViewById(android.R.id.content), "Produto Cadastrado", 3000);
                         mySnackbar.show();
-                        getActivity().onBackPressed();
                     } else {
-                        Snackbar mySnackbar = Snackbar.make(mRoot.getRootView().findViewById(android.R.id.content), "Produto não cadastrado", 3000);
+                        Snackbar mySnackbar = Snackbar.make(mRoot.findViewById(android.R.id.content), "Produto não cadastrado", 3000);
                         mySnackbar.show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call call, Throwable t) {
-                    Snackbar mySnackbar = Snackbar.make(mRoot.getRootView().findViewById(android.R.id.content), "Erro | Produto Não Cadastrado", 3000);
+                    Snackbar mySnackbar = Snackbar.make(mRoot.findViewById(android.R.id.content), "Erro | Produto Não Cadastrado", 3000);
                     mySnackbar.show();
                     Log.e("Erro", t.getMessage());
                 }
             });
         } catch (Exception e){
-            Snackbar mySnackbar = Snackbar.make(mRoot.getRootView().findViewById(android.R.id.content), e.getMessage(), 3000);
+            Snackbar mySnackbar = Snackbar.make(mRoot.findViewById(android.R.id.content), e.getMessage(), 3000);
             mySnackbar.show();
             Log.e("Erro", e.getMessage());
         }
@@ -260,7 +272,7 @@ public class cadastroProdutoFragment extends Fragment {
             nomeDasPracas[i] = mPracas[i].getNome();
         }
         Spinner spinner = mRoot.findViewById(R.id.spinner);
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(mRoot.getContext(),
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item, nomeDasPracas);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
@@ -272,9 +284,33 @@ public class cadastroProdutoFragment extends Fragment {
             nomeDasCategorias[i] = mCategorias[i].getNome();
         }
         Spinner spinner = mRoot.findViewById(R.id.spinnerCategoria);
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(mRoot.getContext(),
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item, nomeDasCategorias);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
+    }
+
+    private void obterProduto(String idProduto){
+        Retrofit retrofit = NetworkClient.getRetrofitClient();
+        EscolherProdutosAPI lib = retrofit.create(EscolherProdutosAPI.class);
+        Call call;
+        call = lib.getProdutos("{\"p.id_produto\": \"" + idProduto + "\"}");
+        call.enqueue(new Callback() {
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                if (response.body() != null) {
+                    Produto produto = ((Produto[]) response.body()).length > 0 ? ((Produto[]) response.body())[0] : null;
+                    initViews(mRoot, produto);
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Snackbar mySnackbar = Snackbar.make(mRoot.findViewById(android.R.id.content), "Ocorreu um erro ao obter produto.", 3000);
+                mySnackbar.show();
+                Log.e("Erro", t.getMessage());
+            }
+        });
     }
 }

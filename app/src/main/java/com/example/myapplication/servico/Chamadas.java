@@ -79,4 +79,11 @@ public class Chamadas {
         call = produtos.getProdutos(filtroString);
         call.enqueue(callback);
     }
+
+    public static void getCategorias(Callback callback){
+        Retrofit retrofit = NetworkClient.getRetrofitClient();
+        EscolherProdutosAPI categoria = retrofit.create(EscolherProdutosAPI.class);
+        Call call = categoria.obterCategorias();
+        call.enqueue(callback);
+    }
 }

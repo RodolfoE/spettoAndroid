@@ -1,5 +1,6 @@
 package com.example.myapplication.util;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -12,6 +13,8 @@ import android.widget.LinearLayout;
 
 import androidx.collection.ArrayMap;
 import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.myapplication.EscolherProdutoActivity;
 import com.example.myapplication.R;
@@ -120,5 +123,12 @@ public class utils {
             InputMethodManager imm = (InputMethodManager) rootView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    public static void alterarFragmento(Fragment fragment, int idNovoFragment, FragmentActivity activity){
+        activity.getSupportFragmentManager().beginTransaction()
+                .replace(idNovoFragment, fragment, "findThisFragment")
+                .addToBackStack(null)
+                .commit();
     }
 }

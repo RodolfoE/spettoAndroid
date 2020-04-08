@@ -32,8 +32,7 @@
     <fragment
         android:id="@+id/nav_cadastro_produto"
         android:name="com.example.myapplication.ui.cadastroProduto.cadastroProdutoFragment"
-        android:label="Cadastro de Produto"
-        tools:layout="@layout/fragment_cadastro_produto" />
+        android:label="Cadastro de Produto" />
 
     <fragment
         android:id="@+id/nav_slideshow"
